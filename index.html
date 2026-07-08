@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layering Prompts</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: '#1f2a52',
+                        teal: '#00bec7',
+                        lightBlue: '#d2f0f0',
+                        grey: '#abb5bf'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .highlight-active {
+            background-color: #d2f0f0;
+            color: #1f2a52 !important; /* Forces dark text for perfect readability */
+            font-weight: 600;
+            border-radius: 4px;
+            padding: 2px 4px;
+            transition: all 0.3s ease;
+        }
+        .highlight-inactive {
+            background-color: transparent;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="bg-gray-50 text-navy font-sans min-h-screen flex flex-col">
+
+    <header class="bg-navy text-white pt-6 pb-4 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 md:px-6">
+            <h1 class="text-2xl font-bold tracking-wide mb-6">Layering Prompts</h1>
+            
+            <!-- Main Navigation Across the Top -->
+            <nav class="flex flex-row flex-wrap gap-3">
+                <button id="btn-tab-1" onclick="switchTab('tab-1')" class="tab-btn bg-teal text-white px-5 py-2.5 rounded-t-lg shadow-md hover:bg-teal/80 transition font-medium">1. The Art of Layering</button>
+                <button id="btn-tab-2" onclick="switchTab('tab-2')" class="tab-btn bg-white/10 text-white px-5 py-2.5 rounded-t-lg hover:bg-white/20 transition font-medium">2. Critical Thinking</button>
+                <button id="btn-tab-3" onclick="switchTab('tab-3')" class="tab-btn bg-white/10 text-white px-5 py-2.5 rounded-t-lg hover:bg-white/20 transition font-medium">3. Learning Science</button>
+                <button id="btn-tab-4" onclick="switchTab('tab-4')" class="tab-btn bg-white/10 text-white px-5 py-2.5 rounded-t-lg hover:bg-white/20 transition font-medium">4. Industry Alignment</button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="flex-grow flex flex-col max-w-7xl mx-auto w-full p-4 md:p-6">
+        <main class="w-full bg-white rounded-xl shadow-lg p-6 md:p-10 border border-grey/30">
+            
+            <div id="tab-1" class="tab-content active">
+                <h2 class="text-3xl font-bold text-teal mb-4 border-b-2 border-lightBlue pb-2">Strategic Layering</h2>
+                <p class="text-lg mb-6 text-gray-700">Build your prompts iteratively by adding specific layers of context, role, tone, and frameworks to guide the AI towards a precise, high-quality outcome.</p>
+                
+                <div class="bg-navy text-white p-6 rounded-lg shadow-inner mb-6">
+                    <h3 class="text-xl font-semibold mb-4 flex items-center gap-2 text-lightBlue">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                        </svg>
+                        Prompt Analysis Canvas
+                    </h3>
+                    <p class="mb-6 text-sm text-grey">Select the layers below to analyse how this complex prompt is constructed.</p>
+                    
+                    <!-- Inner Split Layout: Left Nav + Right Text Box -->
+                    <div class="flex flex-col md:flex-row gap-6">
+                        
+                        <!-- Left-Hand Navigation for Canvas -->
+                        <div class="w-full md:w-1/3 lg:w-1/4 flex flex-col gap-3">
+                            <button id="btn-role" onclick="highlight('role')" class="canvas-btn bg-teal/20 text-teal border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">1. Role & Task</button>
+                            <button id="btn-frameworks" onclick="highlight('frameworks')" class="canvas-btn bg-teal/20 text-teal border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">2. Frameworks</button>
+                            <button id="btn-tone" onclick="highlight('tone')" class="canvas-btn bg-teal/20 text-teal border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">3. Tone & Style</button>
+                            <button id="btn-output" onclick="highlight('output')" class="canvas-btn bg-teal/20 text-teal border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">4. Output Details</button>
+                            
+                            <div class="mt-4 border-t border-white/10 pt-4">
+                                <button onclick="highlight('reset')" class="w-full bg-grey/20 text-grey border border-grey px-4 py-2 rounded hover:bg-grey hover:text-navy transition text-left">Reset Prompt</button>
+                            </div>
+                        </div>
+
+                        <!-- Right-Hand Prompt Text Box -->
+                        <div class="w-full md:w-2/3 lg:w-3/4 bg-white/10 p-6 rounded-lg border border-white/20 text-lg leading-relaxed font-light shadow-inner">
+                            <span id="role" class="prompt-segment highlight-inactive">You are a Project manager scoping a project.</span> 
+                            <span id="frameworks" class="prompt-segment highlight-inactive">As you do, ensure your objectives are SMART (Specific, Measurable, Achievable, Relevant, Time-bound) to provide clear, actionable targets for success. Embrace the Agile Manifesto principles to foster iterative delivery and remain highly adaptable to the client's evolving needs, whilst applying Lean Project Management to relentlessly identify and eliminate waste, maximising value throughout the process.</span> 
+                            <span id="tone" class="prompt-segment highlight-inactive">Make the tone professional. Be encouraging as you provide feedback. Use Australian English (analyse instead of analyze). Don't make it too informal.</span> 
+                            <span id="output" class="prompt-segment highlight-inactive">Create a scoping document for the project for stakeholders. Use the brand colours hex #1f2a52, #00bec7, #d2f0f0, #abb5bf in the scoping doc.</span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-2" class="tab-content">
+                <h2 class="text-3xl font-bold text-teal mb-4 border-b-2 border-lightBlue pb-2">Critical Thinking Skills</h2>
+                <p class="text-lg mb-6 text-gray-700">Apply Socratic thinking to evaluate and refine your prompts, ensuring deep, robust, and thoughtful outputs from your AI.</p>
+                
+                <div class="bg-navy text-white p-6 rounded-lg shadow-inner mb-6">
+                    <h3 class="text-xl font-semibold mb-4 flex items-center gap-2 text-lightBlue">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Socratic Questioning Canvas
+                    </h3>
+                    <p class="mb-6 text-sm text-grey">Select a Socratic method below to see how it applies to L&D prompt engineering.</p>
+                    
+                    <div class="flex flex-col md:flex-row gap-6">
+                        
+                        <!-- Left-Hand Navigation for Socratic Canvas -->
+                        <div class="w-full md:w-1/3 lg:w-1/4 flex flex-col gap-3">
+                            <button id="btn-socratic-1" onclick="showSocratic(1)" class="socratic-btn bg-teal text-white border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">1. Clarification</button>
+                            <button id="btn-socratic-2" onclick="showSocratic(2)" class="socratic-btn bg-teal/20 text-teal border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">2. Assumptions</button>
+                            <button id="btn-socratic-3" onclick="showSocratic(3)" class="socratic-btn bg-teal/20 text-teal border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">3. Evidence</button>
+                            <button id="btn-socratic-4" onclick="showSocratic(4)" class="socratic-btn bg-teal/20 text-teal border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">4. Perspectives</button>
+                            <button id="btn-socratic-5" onclick="showSocratic(5)" class="socratic-btn bg-teal/20 text-teal border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">5. Implications</button>
+                            <button id="btn-socratic-6" onclick="showSocratic(6)" class="socratic-btn bg-teal/20 text-teal border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">6. The Question</button>
+                        </div>
+
+                        <!-- Right-Hand Content Box -->
+                        <div class="w-full md:w-2/3 lg:w-3/4 bg-white/10 p-6 rounded-lg border border-white/20 text-lg leading-relaxed font-light shadow-inner">
+                            <div id="content-socratic-1" class="socratic-content block">
+                                <strong class="text-xl text-lightBlue block mb-2">What exactly do we mean by this?</strong>
+                                <p class="mb-4">Use this to force the AI to define ambiguous terms before generating content.</p>
+                                <div class="bg-navy/50 p-4 rounded border-l-4 border-teal text-base">
+                                    <span class="text-grey block mb-1 uppercase text-xs font-bold tracking-wider">Example L&D Prompt</span>
+                                    "Before we design this module, what exactly do we mean by 'agile working'? Ask me 3 clarifying questions to define the scope."
+                                </div>
+                            </div>
+                            
+                            <div id="content-socratic-2" class="socratic-content hidden">
+                                <strong class="text-xl text-lightBlue block mb-2">What are we taking for granted here?</strong>
+                                <p class="mb-4">Use this to identify blind spots in your target audience analysis.</p>
+                                <div class="bg-navy/50 p-4 rounded border-l-4 border-teal text-base">
+                                    <span class="text-grey block mb-1 uppercase text-xs font-bold tracking-wider">Example L&D Prompt</span>
+                                    "Review my proposed onboarding training plan. What assumptions am I making about the new starters' prior knowledge or digital literacy?"
+                                </div>
+                            </div>
+
+                            <div id="content-socratic-3" class="socratic-content hidden">
+                                <strong class="text-xl text-lightBlue block mb-2">What data supports this approach?</strong>
+                                <p class="mb-4">Use this to ensure content is grounded in facts, SME input, or adult learning theories.</p>
+                                <div class="bg-navy/50 p-4 rounded border-l-4 border-teal text-base">
+                                    <span class="text-grey block mb-1 uppercase text-xs font-bold tracking-wider">Example L&D Prompt</span>
+                                    "What learning data or SME evidence supports this instructional approach? Please provide a rationale linking it to cognitive load theory."
+                                </div>
+                            </div>
+
+                            <div id="content-socratic-4" class="socratic-content hidden">
+                                <strong class="text-xl text-lightBlue block mb-2">Are there alternative ways to view this?</strong>
+                                <p class="mb-4">Use this to adapt content for diverse roles, tenures, or learning needs.</p>
+                                <div class="bg-navy/50 p-4 rounded border-l-4 border-teal text-base">
+                                    <span class="text-grey block mb-1 uppercase text-xs font-bold tracking-wider">Example L&D Prompt</span>
+                                    "How might a front-line employee view this compliance training compared to a senior manager? Rewrite the introductory email from both perspectives."
+                                </div>
+                            </div>
+
+                            <div id="content-socratic-5" class="socratic-content hidden">
+                                <strong class="text-xl text-lightBlue block mb-2">If we do this, what follows?</strong>
+                                <p class="mb-4">Use this to forecast the operational impact of a learning intervention.</p>
+                                <div class="bg-navy/50 p-4 rounded border-l-4 border-teal text-base">
+                                    <span class="text-grey block mb-1 uppercase text-xs font-bold tracking-wider">Example L&D Prompt</span>
+                                    "If we roll out this software training via micro-learning only, what are the potential consequences for staff who need comprehensive support?"
+                                </div>
+                            </div>
+
+                            <div id="content-socratic-6" class="socratic-content hidden">
+                                <strong class="text-xl text-lightBlue block mb-2">Why is this the central issue?</strong>
+                                <p class="mb-4">Use this to validate if a training request is actually a training problem.</p>
+                                <div class="bg-navy/50 p-4 rounded border-l-4 border-teal text-base">
+                                    <span class="text-grey block mb-1 uppercase text-xs font-bold tracking-wider">Example L&D Prompt</span>
+                                    "Instead of asking 'how do we train them on this tool', should we be asking 'is this tool intuitive enough'? Analyse the root performance problem."
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-3" class="tab-content">
+                <h2 class="text-3xl font-bold text-teal mb-4 border-b-2 border-lightBlue pb-2">Learning Science Principles</h2>
+                <p class="text-lg mb-6 text-gray-700">Embed evidence-based learning strategies directly into your AI prompts to generate highly effective educational materials.</p>
+                
+                <div class="bg-navy text-white p-6 rounded-lg shadow-inner mb-6">
+                    <h3 class="text-xl font-semibold mb-4 flex items-center gap-2 text-lightBlue">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                        </svg>
+                        Pedagogical Prompt Canvas
+                    </h3>
+                    <p class="mb-6 text-sm text-grey">Select a learning science principle below to see how to prompt for it.</p>
+                    
+                    <div class="flex flex-col md:flex-row gap-6">
+                        
+                        <!-- Left-Hand Navigation for Science Canvas -->
+                        <div class="w-full md:w-1/3 lg:w-1/4 flex flex-col gap-3">
+                            <button id="btn-science-1" onclick="showScience(1)" class="science-btn bg-teal text-white border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">1. Active Learning</button>
+                            <button id="btn-science-2" onclick="showScience(2)" class="science-btn bg-teal/20 text-teal border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">2. Cognitive Load</button>
+                            <button id="btn-science-3" onclick="showScience(3)" class="science-btn bg-teal/20 text-teal border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">3. Adaptability</button>
+                            <button id="btn-science-4" onclick="showScience(4)" class="science-btn bg-teal/20 text-teal border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">4. Curiosity</button>
+                            <button id="btn-science-5" onclick="showScience(5)" class="science-btn bg-teal/20 text-teal border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">5. Metacognition</button>
+                        </div>
+
+                        <!-- Right-Hand Content Box -->
+                        <div class="w-full md:w-2/3 lg:w-3/4 bg-white/10 p-6 rounded-lg border border-white/20 text-lg leading-relaxed font-light shadow-inner">
+                            <div id="content-science-1" class="science-content block">
+                                <strong class="text-xl text-lightBlue block mb-2">Inspiring Active Learning</strong>
+                                <p class="mb-4">Allow for practice and healthy struggle with timely feedback.</p>
+                                <div class="bg-navy/50 p-4 rounded border-l-4 border-teal text-base">
+                                    <span class="text-grey block mb-1 uppercase text-xs font-bold tracking-wider">Prompt Example</span>
+                                    "Create a branching scenario where the learner must make a choice about handling a workplace hazard. Do not provide the answer immediately; provide feedback based on their specific choice."
+                                </div>
+                            </div>
+                            
+                            <div id="content-science-2" class="science-content hidden">
+                                <strong class="text-xl text-lightBlue block mb-2">Managing Cognitive Load</strong>
+                                <p class="mb-4">Present relevant, well-structured information in multiple modalities.</p>
+                                <div class="bg-navy/50 p-4 rounded border-l-4 border-teal text-base">
+                                    <span class="text-grey block mb-1 uppercase text-xs font-bold tracking-wider">Prompt Example</span>
+                                    "Rewrite this dense 10-page policy document into a micro-learning script. Use dot points, bold key terms, and keep sentences under 15 words to minimise extraneous cognitive load."
+                                </div>
+                            </div>
+
+                            <div id="content-science-3" class="science-content hidden">
+                                <strong class="text-xl text-lightBlue block mb-2">Adapting to the Learner</strong>
+                                <p class="mb-4">Dynamically adjust to goals and needs, grounded in relevant materials.</p>
+                                <div class="bg-navy/50 p-4 rounded border-l-4 border-teal text-base">
+                                    <span class="text-grey block mb-1 uppercase text-xs font-bold tracking-wider">Prompt Example</span>
+                                    "Design a pre-assessment prompt. Based on the learner's score, outline how the subsequent module should adapt to be either a beginner walkthrough or an advanced case study."
+                                </div>
+                            </div>
+
+                            <div id="content-science-4" class="science-content hidden">
+                                <strong class="text-xl text-lightBlue block mb-2">Stimulating Curiosity</strong>
+                                <p class="mb-4">Inspire engagement to provide motivation through the learning journey.</p>
+                                <div class="bg-navy/50 p-4 rounded border-l-4 border-teal text-base">
+                                    <span class="text-grey block mb-1 uppercase text-xs font-bold tracking-wider">Prompt Example</span>
+                                    "Draft an introductory module hook. Use a surprising statistic or a compelling scenario about data privacy to stimulate curiosity before presenting the learning objectives."
+                                </div>
+                            </div>
+
+                            <div id="content-science-5" class="science-content hidden">
+                                <strong class="text-xl text-lightBlue block mb-2">Deepening Metacognition</strong>
+                                <p class="mb-4">Plan, monitor and help the learner reflect on progress.</p>
+                                <div class="bg-navy/50 p-4 rounded border-l-4 border-teal text-base">
+                                    <span class="text-grey block mb-1 uppercase text-xs font-bold tracking-wider">Prompt Example</span>
+                                    "Generate 3 reflection questions for the end of the module that prompt the learner to plan how they will apply this new skill in their daily workflow and anticipate potential roadblocks."
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-4" class="tab-content">
+                <h2 class="text-3xl font-bold text-teal mb-4 border-b-2 border-lightBlue pb-2">Industry Alignment</h2>
+                <p class="text-lg mb-6 text-gray-700">Layer your content with industry-specific requirements (e.g., Unit numbers or ISO standards) as part of your iterative process. Use this approach when specific industries require an uplift to a course because a law or standard has been changed.</p>
+                
+                <div class="bg-navy text-white p-6 rounded-lg shadow-inner mb-6">
+                    <h3 class="text-xl font-semibold mb-4 flex items-center gap-2 text-lightBlue">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Compliance & Standards Canvas
+                    </h3>
+                    <p class="mb-6 text-sm text-grey">Select an alignment type below to see how to prompt for industry-specific updates.</p>
+                    
+                    <div class="flex flex-col md:flex-row gap-6">
+                        
+                        <!-- Left-Hand Navigation for Industry Canvas -->
+                        <div class="w-full md:w-1/3 lg:w-1/4 flex flex-col gap-3">
+                            <button id="btn-industry-1" onclick="showIndustry(1)" class="industry-btn bg-teal text-white border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">1. Legislative Updates</button>
+                            <button id="btn-industry-2" onclick="showIndustry(2)" class="industry-btn bg-teal/20 text-teal border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">2. ISO Standards</button>
+                            <button id="btn-industry-3" onclick="showIndustry(3)" class="industry-btn bg-teal/20 text-teal border border-teal px-4 py-3 rounded-lg hover:bg-teal hover:text-white transition text-left font-medium">3. Unit Competencies</button>
+                        </div>
+
+                        <!-- Right-Hand Content Box -->
+                        <div class="w-full md:w-2/3 lg:w-3/4 bg-white/10 p-6 rounded-lg border border-white/20 text-lg leading-relaxed font-light shadow-inner">
+                            <div id="content-industry-1" class="industry-content block">
+                                <strong class="text-xl text-lightBlue block mb-2">Legislative & Law Changes</strong>
+                                <p class="mb-4">Uplift courses by specifically referencing new laws or acts that govern an industry.</p>
+                                <div class="bg-navy/50 p-4 rounded border-l-4 border-teal text-base">
+                                    <span class="text-grey block mb-1 uppercase text-xs font-bold tracking-wider">Prompt Example</span>
+                                    "Review this workplace safety module and update the scenarios to explicitly comply with the new 2026 WHS Act regulations regarding psychosocial hazards in the workplace."
+                                </div>
+                            </div>
+                            
+                            <div id="content-industry-2" class="industry-content hidden">
+                                <strong class="text-xl text-lightBlue block mb-2">ISO & International Standards</strong>
+                                <p class="mb-4">Ensure quality and consistency by aligning learning outcomes with globally recognised standards.</p>
+                                <div class="bg-navy/50 p-4 rounded border-l-4 border-teal text-base">
+                                    <span class="text-grey block mb-1 uppercase text-xs font-bold tracking-wider">Prompt Example</span>
+                                    "Analyse this leadership training program. Where are the gaps when mapped against the requirements of ISO 9001:2015 for quality management? Suggest additions to close these gaps."
+                                </div>
+                            </div>
+
+                            <div id="content-industry-3" class="industry-content hidden">
+                                <strong class="text-xl text-lightBlue block mb-2">Unit Competencies (VET)</strong>
+                                <p class="mb-4">Map assessments and performance criteria directly to registered training organisation frameworks.</p>
+                                <div class="bg-navy/50 p-4 rounded border-l-4 border-teal text-base">
+                                    <span class="text-grey block mb-1 uppercase text-xs font-bold tracking-wider">Prompt Example</span>
+                                    "Generate a practical assessment rubric for a customer service role. You must ensure the criteria directly align with the performance evidence required in BSBFLM312 - Contribute to team effectiveness."
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        function highlight(section) {
+            // Reset all text highlights
+            document.querySelectorAll('.prompt-segment').forEach(el => {
+                el.classList.remove('highlight-active');
+                el.classList.add('highlight-inactive');
+            });
+            
+            // Reset all canvas button styles
+            document.querySelectorAll('.canvas-btn').forEach(el => {
+                el.classList.remove('bg-teal', 'text-white');
+                el.classList.add('bg-teal/20', 'text-teal');
+            });
+
+            // Apply highlight to target text and its corresponding button
+            if (section !== 'reset') {
+                const target = document.getElementById(section);
+                const targetBtn = document.getElementById('btn-' + section);
+                
+                if(target) {
+                    target.classList.remove('highlight-inactive');
+                    target.classList.add('highlight-active');
+                }
+                
+                if(targetBtn) {
+                    targetBtn.classList.remove('bg-teal/20', 'text-teal');
+                    targetBtn.classList.add('bg-teal', 'text-white');
+                }
+            }
+        }
+
+        // Logic for Socratic Canvas (Tab 2)
+        function showSocratic(id) {
+            // Hide all Socratic content
+            document.querySelectorAll('.socratic-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            
+            // Reset all Socratic buttons
+            document.querySelectorAll('.socratic-btn').forEach(el => {
+                el.classList.remove('bg-teal', 'text-white');
+                el.classList.add('bg-teal/20', 'text-teal');
+            });
+
+            // Show target content and highlight button
+            document.getElementById('content-socratic-' + id).classList.remove('hidden');
+            document.getElementById('content-socratic-' + id).classList.add('block');
+            
+            const btn = document.getElementById('btn-socratic-' + id);
+            if(btn) {
+                btn.classList.remove('bg-teal/20', 'text-teal');
+                btn.classList.add('bg-teal', 'text-white');
+            }
+        }
+
+        // Logic for Science Canvas (Tab 3)
+        function showScience(id) {
+            // Hide all Science content
+            document.querySelectorAll('.science-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            
+            // Reset all Science buttons
+            document.querySelectorAll('.science-btn').forEach(el => {
+                el.classList.remove('bg-teal', 'text-white');
+                el.classList.add('bg-teal/20', 'text-teal');
+            });
+
+            // Show target content and highlight button
+            document.getElementById('content-science-' + id).classList.remove('hidden');
+            document.getElementById('content-science-' + id).classList.add('block');
+            
+            const btn = document.getElementById('btn-science-' + id);
+            if(btn) {
+                btn.classList.remove('bg-teal/20', 'text-teal');
+                btn.classList.add('bg-teal', 'text-white');
+            }
+        }
+
+        // Logic for Industry Canvas (Tab 4)
+        function showIndustry(id) {
+            // Hide all Industry content
+            document.querySelectorAll('.industry-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            
+            // Reset all Industry buttons
+            document.querySelectorAll('.industry-btn').forEach(el => {
+                el.classList.remove('bg-teal', 'text-white');
+                el.classList.add('bg-teal/20', 'text-teal');
+            });
+
+            // Show target content and highlight button
+            document.getElementById('content-industry-' + id).classList.remove('hidden');
+            document.getElementById('content-industry-' + id).classList.add('block');
+            
+            const btn = document.getElementById('btn-industry-' + id);
+            if(btn) {
+                btn.classList.remove('bg-teal/20', 'text-teal');
+                btn.classList.add('bg-teal', 'text-white');
+            }
+        }
+
+        function switchTab(tabId) {
+            // Hide all main tab content
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Reset top main button styles
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-teal', 'text-white', 'shadow-md');
+                el.classList.add('bg-white/10', 'text-white');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+            
+            // Highlight active top main button
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('bg-white/10');
+            activeBtn.classList.add('bg-teal', 'shadow-md');
+        }
+    </script>
+</body>
+</html>
